@@ -1,0 +1,9 @@
+public class IdleTransition implements Runnable {
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+       System.out.println("Completed BUSY to IDLE transition");
+	}
+
+}
