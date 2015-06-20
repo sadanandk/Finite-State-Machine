@@ -1,0 +1,29 @@
+import java.util.HashMap;
+import java.util.Map;
+
+	  /**
+	   * State class 
+	   */
+   public class State {
+	
+	    Map<String, Transition> transitions;
+	    Runnable runnableForChangeOfState;  // called when state change happens..
+	      
+
+	    State( Runnable runnableForChangeOfState) {
+	      transitions = new HashMap<String, Transition>();
+	      this.runnableForChangeOfState = runnableForChangeOfState;
+	      
+	    }
+
+	    public void addTransition(Transition trans) {
+	      transitions.put(trans.evtName, trans);
+	    }
+
+
+	    public void runAlwaysCode() {
+	      if (runnableForChangeOfState != null) {
+	    	  runnableForChangeOfState.run();
+	      }
+	    }
+	  }
