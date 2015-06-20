@@ -1,0 +1,9 @@
+public class BusyTransition implements  Runnable {
+
+	String ev = "Busy";
+	@Override
+	public void run(){
+		System.out.println("Completed IDLE to BUSY Transition");
+	}
+
+}
