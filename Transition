@@ -1,0 +1,35 @@
+
+    /**
+	   * Create a new transition. See the documentation for addEvent and
+	   * addTransition in FSM Class.
+	   */
+	  public class Transition {
+	    String evtName;
+	    String startState;
+	    String endState;
+
+	    /**
+	     * Create a transition object that responds to the given event when in
+	     * the given startState, and puts the FSM into the endState provided.
+	     */
+	    public Transition(String evtName, String startState, String endState) {
+	      this.evtName = evtName;
+	      this.startState = startState;
+	      this.endState = endState;
+	    }
+
+	    /**
+	     * Override this to have FSM execute code immediately before following a
+	     * state transition.
+	     */
+	    public void doBeforeTransition() {
+	    	
+	    }
+
+	    /**
+	     * Override this to have FSM execute code immediately after following a
+	     * state transition.
+	     */
+	    public void doAfterTransition() {
+	     }
+	  }    
