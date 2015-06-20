@@ -1,0 +1,181 @@
+
+
+  import java.util.ArrayList;
+	import java.util.HashMap;
+	import java.util.List;
+	import java.util.HashSet;
+	import java.util.Map;
+	import java.util.NoSuchElementException;
+
+	import javax.swing.event.ChangeEvent;
+	import javax.swing.event.ChangeListener;
+
+	/**
+	 * A FSM. 
+	 * To use it, use 'addState' method. also, add some FSM Transition objects 
+	 * (the Transition class could be used as a superclass for your implementation). 
+	 * Transition object has two useful methods that can be defined by your own 
+	 * implementation: doBeforeTransition and doAfterTransition. 
+	 * FSM will run when you pass it events using the addEvent method. 
+	 * If there is an appropriate transition for the current state, the transition's 
+	 * doBefore/doAfter methods are called and the FSM is put into the new state..
+	 **/
+	
+	public class FSM { 
+
+	  protected String name;
+	  protected String currentState;
+	  protected HashMap<String, State> states;
+	  protected List<ChangeListener> changeListeners;
+	  protected boolean debug;
+
+	  /**
+	   * Create a FSM 
+	   */
+	  public FSM(String name) {
+	    this.name = name;
+	    this.states = new HashMap<String, State>();
+	    this.currentState = null;
+	    this.changeListeners = new ArrayList<ChangeListener>();
+	  }
+
+	  /**
+	   * Turn debugging on/off.
+	   */
+	  public void setDebugMode(boolean debug) {
+	    this.debug = debug;
+	  }
+
+	  /**
+	   * Report the current state of the finite state machine.
+	   */
+	  public String getState() {
+	    return currentState;
+	  }
+
+	  /**
+	   * Adds a new state to state machine.
+	   */
+	  public void addState(String state) {
+	    addState(state, null);
+	  }
+
+	  /**
+	   * Establish a new state for the FSM. If the FSM does not currently
+	   * have any states, this state becomes the current. 
+	   * 
+	   **/
+	  public void addState(String state, Runnable stateTrnasitionCode) {
+	    boolean isInitial = (states.size() == 0);
+	    if (!states.containsKey(state)) {
+	      states.put(state, new State(stateTrnasitionCode));
+	    }
+	    if (isInitial) {
+	      setState(state);
+	    }
+	  }
+
+	  public void setStateAlwaysRunCode(String state, Runnable stateChangeTransitionCode) {
+	    states.get(state).runnableForChangeOfState = stateChangeTransitionCode;
+	  }
+
+	  /**
+	   * Sets the current state without following a transition. This will cause a
+	   * change event to be fired.
+	   */
+	  public void setState(String state) {
+	    setState(state, true);
+	  }
+
+	  /**
+	   * Sets the current state and  a change event. During state transitions (with
+	   * the 'addEvent' method), this method is used with the triggerEvent
+	   * parameter as false.
+	   */
+	  public void setState(String state, boolean triggerEvent) {
+	    currentState = state;
+	    states.get(currentState).runAlwaysCode();  // Change state triggers the code
+	    if (triggerEvent) {
+	      fireChangeEvent();
+	    }
+	  }
+
+	  /**
+	   * Establish a new transition. You might use this method something like
+	   * this:
+	   * 
+	   */
+	  public void addTransition(Transition trans) {
+	    State st = states.get(trans.startState);
+	    if (st == null) {
+	      throw new NoSuchElementException("Missing state: "
+	          + trans.startState);
+	    }
+	    st.addTransition(trans);
+	  }
+
+	  /**
+	   * Change listener - java change listener and is
+	   * only used to report changes that have already happened.
+	   */
+	  public void addChangeListener(ChangeListener cl) {
+	    if (!changeListeners.contains(cl)) {
+	      changeListeners.add(cl);
+	    }
+	  }
+
+	  /**
+	   * Add FSM with the named event. If the current state has a transition
+	   * that responds to the given event, the FSM will performed the transition
+	   * using the following steps, assume start and end states are A and B:
+	   * 
+	   */
+	  public void addEvent(String evtName) {
+	    State state = states.get(currentState);
+	    if (state.transitions.containsKey(evtName)) {
+	      Transition trans = state.transitions.get(evtName);
+	      // if (debug) {
+	      // Debug.out("FSM", "Event: " + evtName + ", " + trans.startState +
+	      // " --> " + trans.endState);
+	      // }
+	      trans.doBeforeTransition();
+	      setState(trans.endState, false);
+	      trans.doAfterTransition();
+	      fireChangeEvent();
+	    }
+	  }
+
+	  /**
+	   * Fire a change event to registered listeners.
+	   */
+	  protected void fireChangeEvent() {
+	    ChangeEvent changeEvent = new ChangeEvent(this);
+	    for (ChangeListener cl : changeListeners) {
+	      cl.stateChanged(changeEvent);
+	    }
+	  }
+
+
+	  
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		FSM testFSM = new FSM("Test");
+	
+		testFSM.addState("IDLE", new BusyTransition());
+		testFSM.addState("BUSY", new IdleTransition());
+		
+		
+		// FSM [EvName][CurrentState][End State]
+		Transition newCallTransition = new Transition("New Call", "IDLE","BUSY");
+		Transition CallEnd = new Transition("Call End", "BUSY","IDLE");
+		
+		testFSM.addTransition(newCallTransition);
+		testFSM.addTransition(CallEnd);
+
+		// Test the FSM
+		testFSM.addEvent("New Call");
+		testFSM.addEvent("Call End");
+		
+	}
+}
