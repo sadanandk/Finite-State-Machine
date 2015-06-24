@@ -13,12 +13,10 @@
 	/**
 	 * A FSM. 
 	 * To use it, use 'addState' method. also, add some FSM Transition objects 
-	 * (the Transition class could be used as a superclass for your implementation). 
-	 * Transition object has two useful methods that can be defined by your own 
+	 * ( Transition class is a superclass). 
+	 * Transition object has two useful methods: 
 	 * implementation: doBeforeTransition and doAfterTransition. 
-	 * FSM will run when you pass it events using the addEvent method. 
-	 * If there is an appropriate transition for the current state, the transition's 
-	 * doBefore/doAfter methods are called and the FSM is put into the new state..
+	 * FSM will run when you pass it events. 
 	 **/
 	
 	public class FSM { 
@@ -47,7 +45,7 @@
 	  }
 
 	  /**
-	   * Report the current state of the finite state machine.
+	   * current state of the finite state machine.
 	   */
 	  public String getState() {
 	    return currentState;
@@ -61,8 +59,7 @@
 	  }
 
 	  /**
-	   * Establish a new state for the FSM. If the FSM does not currently
-	   * have any states, this state becomes the current. 
+	   * Establish a new state for the FSM.  
 	   * 
 	   **/
 	  public void addState(String state, Runnable stateTrnasitionCode) {
@@ -88,9 +85,8 @@
 	  }
 
 	  /**
-	   * Sets the current state and  a change event. During state transitions (with
-	   * the 'addEvent' method), this method is used with the triggerEvent
-	   * parameter as false.
+	   * Sets the current state and  a change event.  
+	   * 
 	   */
 	  public void setState(String state, boolean triggerEvent) {
 	    currentState = state;
@@ -101,8 +97,7 @@
 	  }
 
 	  /**
-	   * Establish a new transition. You might use this method something like
-	   * this:
+	   * Establish a new transition. 
 	   * 
 	   */
 	  public void addTransition(Transition trans) {
