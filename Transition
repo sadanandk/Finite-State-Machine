@@ -1,7 +1,6 @@
 
     /**
-	   * Create a new transition. See the documentation for addEvent and
-	   * addTransition in FSM Class.
+	   * Create a new transition. 
 	   */
 	  public class Transition {
 	    String evtName;
@@ -9,8 +8,7 @@
 	    String endState;
 
 	    /**
-	     * Create a transition object that responds to the given event when in
-	     * the given startState, and puts the FSM into the endState provided.
+	     * Create a transition object.
 	     */
 	    public Transition(String evtName, String startState, String endState) {
 	      this.evtName = evtName;
